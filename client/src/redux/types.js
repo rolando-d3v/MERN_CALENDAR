@@ -4,4 +4,5 @@ export const types = {
   //=>
   eventSetActive: "@calendar/set_active",
   eventAddNew: "@calendar/add_new",
+  eventClearActiveEvent: "@calendar/clear_activeEvent",
 };

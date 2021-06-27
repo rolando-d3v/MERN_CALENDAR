@@ -1,11 +1,15 @@
 import { types } from "../types";
 
 export const eventAddNew = (event) => ({
-    type: types.eventAddNew,
-    payload: event
-})
+  type: types.eventAddNew,
+  payload: event,
+});
 
 export const eventSetActive = (event) => ({
   type: types.eventSetActive,
-  payload: event
-})
+  payload: event,
+});
+
+export const eventClearActiveEvent = () => ({
+  type: types.eventClearActiveEvent,
+});
