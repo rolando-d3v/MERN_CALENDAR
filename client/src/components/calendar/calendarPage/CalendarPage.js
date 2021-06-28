@@ -20,20 +20,6 @@ moment.locale("es");
 
 const localizer = momentLocalizer(moment);
 
-// const events = [
-//   {
-//     title: "Cumpleaños del jefe",
-//     start: moment().toDate(),
-//     end: moment(2, "hours").toDate(),
-//     bgcolor: "#fafafa",
-//     notes: "Comprar el pastel",
-//     user: {
-//       _id: "1234",
-//       name: "rolando",
-//     },
-//   },
-// ];
-
 //componente
 export default function CalendarPage() {
   const dispatch = useDispatch();
@@ -45,13 +31,13 @@ export default function CalendarPage() {
   );
 
   const onDoubleClick = (e) => {
-    console.log(e);
+    // console.log(e);
     dispatch(layoutOpenModal());
   };
 
   const onSelectEvent = (e) => {
+    // console.log(e);
     dispatch(eventSetActive(e));
-    console.log(e);
   };
 
   const onViewChange = (e) => {

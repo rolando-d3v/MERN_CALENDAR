@@ -5,12 +5,15 @@ import Modal from "react-modal";
 import { useSelector, useDispatch } from "react-redux";
 import { layoutCloseModal } from "../../../redux/layout/layoutAction";
 
-import styles from './calendarForm.module.scss';
+import styles from "./calendarForm.module.scss";
 import "./calendarModal.scss";
 
-
 import { Toast } from "../../alert/Alertas";
-import { eventAddNew } from "../../../redux/calendar/calendarAction";
+import {
+  eventAddNew,
+  eventClearActiveEvent,
+  eventUpdated,
+} from "../../../redux/calendar/calendarAction";
 
 const customStyles = {
   content: {
@@ -25,8 +28,6 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-
-
 //horas iniciales y finales con moment
 const now = moment().minutes(0).seconds(0).add(1, "hours");
 const nowPlus1 = now.clone().add(1, "hour");
@@ -39,13 +40,11 @@ const initEvent = {
   end: nowPlus1.toDate(),
 };
 
-
 //componente
 export default function CalendarModal() {
   const { modalOpen } = useSelector((state) => state.layout);
   const { activeEvent } = useSelector((state) => state.calendar);
   const dispatch = useDispatch();
-
 
   const [dateStart, setDateStart] = useState(now.toDate());
   const [dateEnd, setDateEnd] = useState(nowPlus1.toDate());
@@ -53,13 +52,16 @@ export default function CalendarModal() {
   const [formValues, setFormValues] = useState(initEvent);
   const { notes, title, start, end } = formValues;
 
+  // console.log(formValues);
 
   useEffect(() => {
     if (activeEvent) {
       setFormValues(activeEvent);
-    }
-  }, [activeEvent, setFormValues]);
+    }else {
+      setFormValues( initEvent );
+  }
 
+  }, [activeEvent, setFormValues]);
 
   const changeDataForm = (e) => {
     setFormValues({
@@ -69,7 +71,7 @@ export default function CalendarModal() {
   };
 
   const handleStartDateChange = (e) => {
-    console.log(e);
+    // console.log(e);
     setDateStart(e);
     setFormValues({
       ...formValues,
@@ -78,7 +80,7 @@ export default function CalendarModal() {
   };
 
   const handleEndDateChange = (e) => {
-    console.log(e);
+    // console.log(e);
     setDateEnd(e);
     setFormValues({
       ...formValues,
@@ -86,16 +88,15 @@ export default function CalendarModal() {
     });
   };
 
-
-
+  //close modal
   const closeModal = () => {
-    setFormValues(initEvent);
     dispatch(layoutCloseModal());
+    dispatch(eventClearActiveEvent());
+    setFormValues(initEvent);
   };
 
-  
-   //enviar registro de submit
-   const submitForm = (e) => {
+  //enviar registro de submit
+  const submitForm = (e) => {
     e.preventDefault();
 
     const momentStart = moment(start);
@@ -115,16 +116,21 @@ export default function CalendarModal() {
       });
     }
 
-    dispatch(
-      eventAddNew({
-        ...formValues,
-        id: new Date().getTime(),
-        user: {
-          _id: "123",
-          name: "Rolando mamani",
-        },
-      })
-    );
+    //updated new event
+    if (activeEvent) {
+      dispatch(eventUpdated(formValues));
+    } else {
+      dispatch(
+        eventAddNew({
+          ...formValues,
+          id: new Date().getTime(),
+          user: {
+            _id: "123",
+            name: "Rolando mamani",
+          },
+        })
+      );
+    }
 
     console.log(formValues);
     closeModal();
